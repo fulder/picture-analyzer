@@ -6,14 +6,16 @@ from PIL import Image
 
 class PictureAnalyzer:
 
-    def __init__(self):
-        self.pictures = {}
+    def __init__(self, config):
+        self.config = config
 
-    def get_pictures(self, paths):
-        for path in paths:
+    def get_pictures(self):
+        pictures = {}
+        for path in self.config.get_paths():
             for root, dirs, files in os.walk(path, topdown=False):
                 for f in files:
                     self._load_image(os.path.join(root, f))
+        return pictures
 
     def _creation_date(self, path_to_file):
         c_time = os.path.getctime(path_to_file)
