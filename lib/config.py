@@ -1,3 +1,4 @@
+import pyyaml
 
 class Config:
 
@@ -6,3 +7,4 @@ class Config:
 
     def add_path(self, path):
         self.paths.append(path)
+

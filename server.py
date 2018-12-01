@@ -1,14 +1,17 @@
 from flask import Flask, jsonify, request
 
 from lib.config import Config
+from lib.picture_analizer import PictureAnalyzer
 
 app = Flask(__name__)
 config = Config()
+picture_analyzer = PictureAnalyzer()
 
 
 @app.route("/pictures", methods=["GET"])
 def pictures():
-    pass
+    picture_analyzer.get_pictures(config.paths)
+    return "test", 200
 
 
 @app.route("/config", methods=["GET"])
@@ -23,5 +26,3 @@ def update_config():
         return "Required paths param not present in body", 400
     config.paths = body["paths"]
     return "Configuration updated", 200
-
-
