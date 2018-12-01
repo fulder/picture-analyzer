@@ -10,8 +10,8 @@ picture_analyzer = PictureAnalyzer(config)
 
 @app.route("/pictures", methods=["GET"])
 def pictures():
-    picture_analyzer.get_pictures()
-    return "test", 200
+    pictures = picture_analyzer.get_pictures()
+    return jsonify(pictures), 200
 
 
 @app.route("/config", methods=["GET"])
