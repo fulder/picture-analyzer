@@ -1,3 +1,4 @@
+import re
 from datetime import datetime
 import os
 import piexif
@@ -25,7 +26,7 @@ class PictureAnalyzer:
         return c_time
 
     def _load_image(self, path):
-        if ".jpg" in path or ".jpeg" in path or ".JPG" in path or ".JPEG" in path:
+        if re.search(r"\.jpg|\.jpeg|\.JPG|\.JPEG", path):
             img = Image.open(path)
             print(img.info)
             if 'exif' in img.info:
