@@ -7,6 +7,7 @@ from PIL import Image
 
 log = logging.getLogger("picture_analyzer")
 
+
 class PictureAnalyzer:
 
     def __init__(self, config):
@@ -30,12 +31,12 @@ class PictureAnalyzer:
             img = Image.open(path)
             if 'exif' in img.info:
                 exif_dict = piexif.load(img.info['exif'])
-                print(exif_dict)
+                exif_date = exif_dict["0th"][piexif.ImageIFD.DateTime].decode("utf-8")
+                return {"date": datetime.strptime(exif_date, "%Y:%m:%d %H:%M:%S").strftime("%Y-%m-%d")}
             else:
                 return {"date": self._creation_date(path)}
         else:
             log.warning("Couldn't load: {}".format(path))
-
 
     def _creation_date(self, path_to_file):
         c_time = os.path.getctime(path_to_file)

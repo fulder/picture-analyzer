@@ -1,7 +1,9 @@
+import logging
 import os
 
 import yaml
 
+log = logging.getLogger("config")
 
 class Config:
 
@@ -11,6 +13,7 @@ class Config:
         self._load_config()
 
     def add_path(self, path):
+        log.debug("Adding path: {}".format(path))
         if "paths" not in self.config:
             self.config["paths"] = []
         self.config["paths"].append(path)

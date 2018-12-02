@@ -10,8 +10,8 @@ picture_analyzer = PictureAnalyzer(config)
 
 @app.route("/pictures", methods=["GET"])
 def pictures():
-    pictures = picture_analyzer.get_pictures()
-    return jsonify(pictures), 200
+    ret = picture_analyzer.get_pictures()
+    return jsonify(ret), 200
 
 
 @app.route("/config", methods=["GET"])
@@ -21,8 +21,13 @@ def get_config():
 
 @app.route("/config", methods=["POST"])
 def add_config():
-    body = request.json
+    try:
+        body = request.json
+    except Exception:
+        return "Couldn't parse body", 400
+
     if "path" not in body:
         return "Required 'path' param not present in body", 400
+
     config.add_path(body["path"])
     return "Configuration updated", 200
