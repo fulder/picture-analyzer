@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, request
-
+from flask_cors import CORS
 from lib.config import Config
 from lib.picture_analizer import PictureAnalyzer
 
 app = Flask(__name__)
+CORS(app)
 config = Config()
 picture_analyzer = PictureAnalyzer(config)
 
@@ -20,7 +21,7 @@ def get_config():
 
 
 @app.route("/config", methods=["POST"])
-def add_config():
+def add_path():
     try:
         body = request.json
     except Exception:

@@ -2,3 +2,4 @@ flask
 piexif
 pillow
 pyyaml
+flask-cors

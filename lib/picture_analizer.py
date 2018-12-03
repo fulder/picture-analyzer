@@ -1,7 +1,10 @@
 import logging
+import ntpath
 import re
 from datetime import datetime
 import os
+from urllib import parse
+
 import piexif
 from PIL import Image
 
@@ -23,7 +26,11 @@ class PictureAnalyzer:
                     if img_info is not None:
                         if img_info["date"] not in pictures:
                             pictures[img_info["date"]] = []
-                        pictures[img_info["date"]].append(img_path)
+                        pictures[img_info["date"]].append(img_info)
+
+        ret = {}
+        for date in sorted(pictures):
+            ret[date] = pictures[date]
         return pictures
 
     def _load_image(self, path):
@@ -32,9 +39,20 @@ class PictureAnalyzer:
             if 'exif' in img.info:
                 exif_dict = piexif.load(img.info['exif'])
                 exif_date = exif_dict["0th"][piexif.ImageIFD.DateTime].decode("utf-8")
-                return {"date": datetime.strptime(exif_date, "%Y:%m:%d %H:%M:%S").strftime("%Y-%m-%d")}
+                thumb_path = os.path.abspath(os.path.join(".thumbs", ntpath.basename(path)))
+                if exif_dict["thumbnail"]:
+                    if not os.path.isdir(".thumbs"):
+                        os.mkdir(".thumbs")
+
+                    thumbnail = exif_dict["thumbnail"]
+                    with open(thumb_path, "wb+") as f:
+                        f.write(thumbnail)
+                return {"date": datetime.strptime(exif_date, "%Y:%m:%d %H:%M:%S").strftime("%Y-%m-%d"),
+                        "path": "file:///" + path,
+                        "thumb_path": "file:///" + thumb_path}
             else:
-                return {"date": self._creation_date(path)}
+                return {"date": self._creation_date(path),
+                        "path": "file:///" + path}
         else:
             log.warning("Couldn't load: {}".format(path))
 
